@@ -12,6 +12,7 @@ import {
   Map, 
   FileText, 
   Settings, 
+  Currency,
   LogOut,
   Menu,
   X
@@ -25,10 +26,11 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { icon: <LayoutDashboard className="mr-2 h-4 w-4" />, label: 'Dashboard', href: '/dashboard' },
-  { icon: <Users className="mr-2 h-4 w-4" />, label: 'Users', href: '/dashboard/users' },
-  { icon: <Map className="mr-2 h-4 w-4" />, label: 'Properties', href: '/dashboard/properties' },
-  { icon: <FileText className="mr-2 h-4 w-4" />, label: 'Reports', href: '/dashboard/reports' },
-  { icon: <Settings className="mr-2 h-4 w-4" />, label: 'Settings', href: '/dashboard/settings' },
+  { icon: <FileText className="mr-2 h-4 w-4" />, label: 'Client', href: '/admin/clients' },
+  { icon: <Users className="mr-2 h-4 w-4" />, label: 'Users', href: '/admin/users' },
+  { icon: <Map className="mr-2 h-4 w-4" />, label: 'Properties', href: '/admin/properties' },
+  { icon: <Currency className="mr-2 h-4 w-4" />, label: 'Pending Payment', href: '/admin/pending-payment' },
+
 ]
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

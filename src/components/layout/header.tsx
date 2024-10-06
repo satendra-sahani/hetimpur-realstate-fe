@@ -13,10 +13,10 @@ export function Header() {
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/login', label: 'Buy Land' },
-    { href: '/login', label: 'Sell Land' },
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/login', label: 'Buy' },
+    { href: '/login', label: 'Sell' },
+    // { href: '/about', label: 'About' },
+    // { href: '/contact', label: 'Contact' },
   ]
 
   return (
