@@ -67,7 +67,7 @@ export const authenticationReducer = (state = initialState, action) => {
     case `${appActions.GET_USER}_START`:
       return { ...state, devListLoading: true };
     case `${appActions.GET_USER}_SUCCESS`:
-      return { ...state, devListLoading: true };
+      return { ...state, devListLoading: true,user:action?.payload };
     case `${appActions.GET_USER}_FAIL`:
       return { ...state, devListLoading: true };
 

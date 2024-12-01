@@ -5,6 +5,11 @@ export const loginAction = payload => ({
   payload,
 });
 
+export const getUserAction = payload => ({
+  type: appActions.GET_USER,
+  payload,
+});
+
 export const signUpAction = payload => ({
   type: appActions.SIGN_UP,
   payload

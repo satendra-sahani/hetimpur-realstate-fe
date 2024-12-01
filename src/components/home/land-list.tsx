@@ -3,7 +3,10 @@
 import { motion } from 'framer-motion'
 import { CardContent,Card } from '../ui/card'
 import { MapPin } from 'lucide-react'
-
+import { RootState } from '@/types/types'
+import { Button } from '../ui/button'
+import { useDispatch } from 'react-redux'
+import {generatePaymentLinkAction} from "../../service/action/common/index.js"
 const landItems = [
   { id: 1, title: 'Hetimpur Countryside Plot', location: 'Hetimpur Area, Country', price: '₹50,000' },
   { id: 2, title: 'Kushinagar Development Land', location: 'Kushinagar Center, Metropolis', price: '₹500,000' },
@@ -13,7 +16,17 @@ const landItems = [
   { id: 6, title: 'Kasia Oasis Land', location: 'Kasia City, Sands', price: '₹80,000' },
 ]
 
-export function LandList() {
+
+interface LandListProps {
+  user: RootState['authenticationReducer']['user'];  // Correctly type the user prop
+  // landItems: Array<{ id: string; title: string; location: string; price: string }>;  // Define the type for landItems
+}
+export function LandList({ user }: LandListProps) {
+  const dispatch=useDispatch();
+  const payNow=()=>{
+    // const
+    dispatch(generatePaymentLinkAction({data:{userType:"USER"}}))
+  }
   return (
     <motion.section 
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -30,10 +43,11 @@ export function LandList() {
         >
           <Card className="overflow-hidden">
             <CardContent className="p-0">
+              <Button onClick={payNow} style={{position:"absolute",zIndex:1,right:10,top:10}} className='bg-black text-white'>Payment Now</Button>
               <img 
                 src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHosv2pxMWqoDNWMOrjTOhQGVp674UpwrXRg&s`} 
                 alt={item.title} 
-                className="w-full h-48 object-cover"
+                className={`w-full h-48 object-cover ${user?.approved?"":"blur-images"}`}
               />
               <div className="p-4">
                 <h3 className="text-lg font-semibold mb-2">{item.title}</h3>

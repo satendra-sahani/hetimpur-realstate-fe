@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const baseUrl = () => {
-  let Base_url ="https://smartcomputer-api.vercel.app/"
+  let Base_url ="http://localhost:5000/api/";
   //  "https://smartcomputer-api.vercel.app/";
   // http://localhost:9000/
 

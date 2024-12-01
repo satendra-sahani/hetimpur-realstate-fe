@@ -1,14 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
 import { Mountain, Menu, X } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserAction } from '@/service/action/authentication'
+import { RootState } from '@/types/types'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user } = useSelector((state: RootState) => state.authenticationReducer);
   const pathname = usePathname()
 
   const navItems = [
@@ -18,6 +22,10 @@ export function Header() {
     // { href: '/about', label: 'About' },
     // { href: '/contact', label: 'Contact' },
   ]
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getUserAction({}))
+  }, [dispatch])
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -27,7 +35,7 @@ export function Header() {
             <Mountain className="h-6 w-6 text-primary" />
             <span className="ml-2 text-xl font-bold text-gray-800">Land Marketplace</span>
           </Link>
-          
+
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-4">
             {navItems.map((item) => (
@@ -40,6 +48,12 @@ export function Header() {
                 <Link href={item.href}>{item.label}</Link>
               </Button>
             ))}
+             {user?.name && <Button
+                variant='ghost'
+                className="w-full justify-start mb-2"
+              >
+                <Link href="#-">{user?.name}</Link>
+              </Button>}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -73,6 +87,13 @@ export function Header() {
                   <Link href={item.href}>{item.label}</Link>
                 </Button>
               ))}
+
+              {user?.name && <Button
+                variant='ghost'
+                className="w-full justify-start mb-2"
+              >
+                <Link href="#-">{user?.name}</Link>
+              </Button>}
             </motion.nav>
           )}
         </AnimatePresence>

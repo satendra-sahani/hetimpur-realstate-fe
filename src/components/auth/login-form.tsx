@@ -9,22 +9,30 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react'
-
+import { useDispatch } from 'react-redux'
+import { loginAction } from "../../service/action/authentication";
 export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
+  const dispatch = useDispatch();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    console.log('Login attempt with:', { email, password })
-    setIsLoading(false)
-    router.push('/')
+    const callBackSucess=()=>{
+      setIsLoading(false)
+      router.push('/')
+    }
+    const callBackError=()=>{
+      setIsLoading(false)
+    }
+
+    dispatch(loginAction({data:{email,password},cb:callBackSucess,errorCB:callBackError}))
+    
   }
 
   const inputVariants = {
