@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const baseUrl = () => {
-  let Base_url ="http://localhost:5000/api/";
-  //  "https://smartcomputer-api.vercel.app/";
+  let Base_url ="https://be.clbhoomi.com/api/";
+  //  "https://be.clbhoomi.com//";
   // http://localhost:9000/
 
   return Base_url;
