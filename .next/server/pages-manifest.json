@@ -1,6 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js"
-}
+{"/_app":"pages/_app.js","/_error":"pages/_error.js","/_document":"pages/_document.js","/admin/pending-payment":"pages/admin/pending-payment.html","/admin/clients":"pages/admin/clients.html","/admin/users":"pages/admin/users.html","/admin/dashboard":"pages/admin/dashboard.html","/api/hello":"pages/api/hello.js","/client/post":"pages/client/post.html","/dashboard":"pages/dashboard.html","/admin/properties":"pages/admin/properties.html","/":"pages/index.html","/dashboard/post-property":"pages/dashboard/post-property.html","/login":"pages/login.html","/payment/checking":"pages/payment/checking.html","/payment/failed":"pages/payment/failed.html","/user":"pages/user.html","/register":"pages/register.html","/payment/success":"pages/payment/success.js","/404":"pages/404.html"}

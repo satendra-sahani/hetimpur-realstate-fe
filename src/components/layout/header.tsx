@@ -9,31 +9,35 @@ import { Mountain, Menu, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getUserAction } from '@/service/action/authentication'
 import { RootState } from '@/types/types'
+import { useRouter } from 'next/router'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user } = useSelector((state: RootState) => state.authenticationReducer);
   const pathname = usePathname()
-
   const navItems = [
-    { href: '/', label: 'Home' },
+    { href: "/", label: 'Home' },
     { href: '/login', label: 'Buy' },
-    { href: '/login', label: 'Sell' },
-    // { href: '/about', label: 'About' },
-    // { href: '/contact', label: 'Contact' },
+    { href: '/client/post', label: 'Sell' },
   ]
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserAction({}))
+    dispatch(getUserAction({hideError:true  }))
   }, [dispatch])
+
+  const logout=()=>{
+    localStorage.clear();
+    window.location.href="/login";
+  }
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 py-3">
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center justify-center">
-            <Mountain className="h-6 w-6 text-primary" />
-            <span className="ml-2 text-xl font-bold text-gray-800">Land Marketplace</span>
+            {/* <Mountain className="h-6 w-6 text-primary" /> */}
+            <img src='/logo.png' height={10} width={120}/>
+            {/* <span className="ml-2 text-xl font-bold text-gray-800">CLBHOO</span> */}
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,7 +56,13 @@ export function Header() {
                 variant='ghost'
                 className="w-full justify-start mb-2"
               >
-                <Link href="#-">{user?.name}</Link>
+                <Link href={user?.role=="client"?"/client/post":"/"}>{user?.name}</Link>
+              </Button>}
+              {user && <Button
+                variant='ghost'
+                className="w-full justify-start mb-2"
+              >
+                <Link href={"#-"} onClick={logout}>Logout</Link>
               </Button>}
           </nav>
 
@@ -88,11 +98,18 @@ export function Header() {
                 </Button>
               ))}
 
-              {user?.name && <Button
+              {/* {user?.name && <Button
                 variant='ghost'
                 className="w-full justify-start mb-2"
               >
-                <Link href="#-">{user?.name}</Link>
+                <Link href={user?.role=="client"?"/client/post":"/"}>{user?.name}</Link>
+              </Button>} */}
+              {user && <Button
+                variant='ghost'
+                className="w-full justify-start mb-2"
+                onClick={logout}
+              >
+                <Link href={"#-"}>Logout</Link>
               </Button>}
             </motion.nav>
           )}

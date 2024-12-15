@@ -14,7 +14,9 @@ export function* sagaEngine({ type, payload }) {
     });
   } catch (error) {
     payload?.errorCB && payload.errorCB(error);
+    if(!payload?.hideError){
     alert(error?.response?.data?.message || error?.message);
+    }
     if (error?.response?.status === 401) {
       yield put({ type: `${appActions[type]}_FAIL` ,request: payload});
       payload.push && payload.push("/login");

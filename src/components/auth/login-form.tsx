@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react'
 import { useDispatch } from 'react-redux'
-import { loginAction } from "../../service/action/authentication";
+import { getUserAction, loginAction } from "../../service/action/authentication";
 export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,6 +25,7 @@ export function LoginForm() {
     await new Promise(resolve => setTimeout(resolve, 2000))
     const callBackSucess=()=>{
       setIsLoading(false)
+      dispatch(getUserAction())
       router.push('/')
     }
     const callBackError=()=>{
@@ -98,9 +99,9 @@ export function LoginForm() {
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-4">
-        <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+        {/* <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
           Forgot your password?
-        </Link>
+        </Link> */}
         <p className="text-sm text-gray-600">
           Don't have an account?{' '}
           <Link href="/register" className="text-blue-600 hover:underline">

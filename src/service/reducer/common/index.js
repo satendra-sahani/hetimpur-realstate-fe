@@ -42,14 +42,43 @@ export const commonReducer = (state = initialState, action) => {
 
     // image
     case `${appActions.UPLOAD_IMAGE}_START`:
-      return { ...state, isJobLoading: true ,[`isLoading${action?.request?.imageType}`]:true};
+      return {
+        ...state,
+        isJobLoading: true,
+        [`isLoading${action?.request?.imageType}`]: true,
+      };
     case `${appActions.UPLOAD_IMAGE}_SUCCESS`:
-      return { ...state, isJobLoading: true ,[`isLoading${action?.request?.imageType}`]:false,[action?.request?.imageType]:action?.payload?.imageUrl};
+      return {
+        ...state,
+        isJobLoading: true,
+        [`isLoading${action?.request?.imageType}`]: false,
+        [action?.request?.imageType]: action?.payload?.imageUrl,
+      };
     case `${appActions.UPLOAD_IMAGE}_FAIL`:
-      return { ...state, isJobLoading: true ,[`isLoading${action?.request?.imageType}`]:false};
+      return {
+        ...state,
+        isJobLoading: true,
+        [`isLoading${action?.request?.imageType}`]: false,
+      };
 
-      case appActions.CLEAR_IMAGE:
-        return {...state,[action?.payload?.imageName]:null}
+    case appActions.CLEAR_IMAGE:
+      return { ...state, [action?.payload?.imageName]: null };
+
+    case `${appActions.GENERATE_PAYMENT_LINK}_START`:
+      return { ...state, isPaymentLink: true };
+    case `${appActions.GENERATE_PAYMENT_LINK}_SUCCESS`:
+      return { ...state, isPaymentLink: false, };
+    case `${appActions.GENERATE_PAYMENT_LINK}_FAIL`:
+      return { ...state, isPaymentLink: false };
+
+      case `${appActions.GET_LAND}_START`:
+        return { ...state,  };
+      case `${appActions.GET_LAND}_SUCCESS`:
+        return { ...state, lands: action?.payload?.data,userLands:action?.payload, };
+      case `${appActions.GET_LAND}_FAIL`:
+        return { ...state,  };
+
+      
 
     default:
       return { ...state };

@@ -2,19 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { CardContent,Card } from '../ui/card'
-import { MapPin } from 'lucide-react'
+import {  Loader2, MapPin } from 'lucide-react'
 import { RootState } from '@/types/types'
 import { Button } from '../ui/button'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {generatePaymentLinkAction} from "../../service/action/common/index.js"
-const landItems = [
-  { id: 1, title: 'Hetimpur Countryside Plot', location: 'Hetimpur Area, Country', price: '₹50,000' },
-  { id: 2, title: 'Kushinagar Development Land', location: 'Kushinagar Center, Metropolis', price: '₹500,000' },
-  { id: 3, title: 'Hata Property', location: 'Hata Town, Seaside', price: '₹750,000' },
-  { id: 4, title: 'Gorakhpur View Lot', location: 'Gorakhpur Region, Mountains', price: '₹100,000' },
-  { id: 5, title: 'Deoria Oasis Land', location: 'Deoria City, Sands', price: '₹80,000' },
-  { id: 6, title: 'Kasia Oasis Land', location: 'Kasia City, Sands', price: '₹80,000' },
-]
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 
 
 interface LandListProps {
@@ -22,10 +16,27 @@ interface LandListProps {
   // landItems: Array<{ id: string; title: string; location: string; price: string }>;  // Define the type for landItems
 }
 export function LandList({ user }: LandListProps) {
+  const {isPaymentLink,userLands}=useSelector((state:RootState)=>state.commonReducer);
+  const [loader,setLoader]=useState<Number>(-1)
+  const router=useRouter();
   const dispatch=useDispatch();
   const payNow=()=>{
-    // const
-    dispatch(generatePaymentLinkAction({data:{userType:"USER"}}))
+    dispatch(
+      generatePaymentLinkAction({
+        data: { userType: 'user' },
+        cb: (res: { paymentLink: string }) => {
+          if (typeof res.paymentLink === 'string') {
+            window.location.href = res.paymentLink;
+          } else {
+            console.error('Invalid payment link:', res.paymentLink);
+          }
+        },
+        hideError:true,
+        errorCB:()=>{
+          router.push("/login")
+        }
+      })
+    );
   }
   return (
     <motion.section 
@@ -34,28 +45,38 @@ export function LandList({ user }: LandListProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.4 }}
     >
-      {landItems.map((item, index) => (
+      {userLands?.data?.map((item, index) => (
         <motion.div
-          key={item.id}
+          key={item?._id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 * index }}
         >
           <Card className="overflow-hidden">
             <CardContent className="p-0">
-              <Button onClick={payNow} style={{position:"absolute",zIndex:1,right:10,top:10}} className='bg-black text-white'>Payment Now</Button>
+              {
+              !user?.approved && 
+                  <Button  onClick={()=>{
+                    payNow();
+                    setLoader(index)
+                  }} style={{position:"absolute",zIndex:1,right:10,top:10}} className='bg-black text-white'>
+                    {(loader ==index && isPaymentLink) ? <Loader2 />:"Payment Now"}
+                    </Button>
+                
+              }
+          
               <img 
-                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHosv2pxMWqoDNWMOrjTOhQGVp674UpwrXRg&s`} 
-                alt={item.title} 
-                className={`w-full h-48 object-cover ${user?.approved?"":"blur-images"}`}
+                src={item.image} 
+                alt={item.status} 
+                className={`w-full h-48 object-cover`}
               />
               <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <h3 className="text-lg font-semibold mb-2">{item.client?.name} (+91 {item?.number})</h3>
                 <p className="text-gray-600 mb-2 flex items-center">
                   <MapPin className="h-4 w-4 mr-1" />
-                  {item.location}
+                  {item.city}, {item.state}
                 </p>
-                <p className="text-xl font-bold text-green-600">{item.price}</p>
+                <p className="text-xl font-bold text-green-600">₹ {item.price}</p>
               </div>
             </CardContent>
           </Card>

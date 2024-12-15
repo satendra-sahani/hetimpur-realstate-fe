@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const baseUrl = () => {
-  let Base_url ="https://be.clbhoomi.com/api/";
-  //  "https://be.clbhoomi.com//";
+  let Base_url ="http://localhost:9001/api/";
+  //  "https://be.clbhoomi.com/api/";
   // http://localhost:9000/
 
   return Base_url;
