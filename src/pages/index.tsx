@@ -33,7 +33,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    if (user && !user.approved) {
+    if (user && user?.role=="user" && !user.approved) {
       router.push('/user'); // Redirect unapproved users
     }
   }, [user, router]);
@@ -51,7 +51,7 @@ export default function HomePage() {
   };
 
   // Redirect to login if the user is not approved
-  if (!user?.approved) {
+  if (!user?.approved && user?.role=="user") {
     return <Login />;
   }
 

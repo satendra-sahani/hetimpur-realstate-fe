@@ -23,10 +23,15 @@ export function LoginForm() {
     setIsLoading(true)
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    const callBackSucess=()=>{
+    const callBackSucess=(res:any)=>{
+      if(res?.user?.role=="client"){
+        router.push('/client/post')
+      }else{
+        router.push('/')
+      }
       setIsLoading(false)
       dispatch(getUserAction())
-      router.push('/')
+     
     }
     const callBackError=()=>{
       setIsLoading(false)
