@@ -12,7 +12,7 @@ import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react'
 import { useDispatch } from 'react-redux'
 import { getUserAction, loginAction } from "../../service/action/authentication";
 export function LoginForm() {
-  const [email, setEmail] = useState('')
+  const [number, setNumber] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -37,7 +37,7 @@ export function LoginForm() {
       setIsLoading(false)
     }
 
-    dispatch(loginAction({data:{email,password},cb:callBackSucess,errorCB:callBackError}))
+    dispatch(loginAction({data:{contact:number,password},cb:callBackSucess,errorCB:callBackError}))
     
   }
 
@@ -53,16 +53,16 @@ export function LoginForm() {
       <CardContent>
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+            <Label htmlFor="number">Number</Label>
             <motion.div whileFocus="focus" variants={inputVariants}>
               <Input
-                id="email"
-                type="email"
+                id="number"
+                type="number"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
                 className="w-full"
-                placeholder="Enter your email"
+                placeholder="Enter your number"
               />
             </motion.div>
           </div>

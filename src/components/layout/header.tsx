@@ -15,6 +15,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user } = useSelector((state: RootState) => state.authenticationReducer);
   const pathname = usePathname()
+  const router = useRouter();
   const navItems = [
     { href: "/", label: 'Home' },
     { href: '/login', label: 'Buy' },
@@ -22,12 +23,30 @@ export function Header() {
   ]
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getUserAction({hideError:true  }))
+    dispatch(getUserAction({
+      hideError: true,
+      errorCB: (res: {
+        status: Number,
+      }): void => {
+        if (res?.status === 401 && pathname === "/") {
+          router.push("/login")
+        }
+
+      },
+      cb: (res: {
+        role: String
+        approved: String,
+      }): void => {
+        if (pathname === "/" && res?.role === "client") {
+          router.push("/client/post")
+        }
+      }
+    }))
   }, [dispatch])
 
-  const logout=()=>{
+  const logout = () => {
     localStorage.clear();
-    window.location.href="/login";
+    window.location.href = "/login";
   }
 
   return (
@@ -36,7 +55,7 @@ export function Header() {
         <div className="flex justify-between items-center">
           <Link href="/" className="flex items-center justify-center">
             {/* <Mountain className="h-6 w-6 text-primary" /> */}
-            <img src='/logo.png' height={10} width={120}/>
+            <img src='/logo.png' height={10} width={120} />
             {/* <span className="ml-2 text-xl font-bold text-gray-800">CLBHOO</span> */}
           </Link>
 
@@ -52,18 +71,18 @@ export function Header() {
                 <Link href={item.href}>{item.label}</Link>
               </Button>
             ))}
-             {user?.name && <Button
-                variant='ghost'
-                className="w-full justify-start mb-2"
-              >
-                <Link href={user?.role=="client"?"/client/post":"/"}>{user?.name}</Link>
-              </Button>}
-              {user && <Button
-                variant='ghost'
-                className="w-full justify-start mb-2"
-              >
-                <Link href={"#-"} onClick={logout}>Logout</Link>
-              </Button>}
+            {user?.name && <Button
+              variant='ghost'
+              className="w-full justify-start mb-2"
+            >
+              <Link href={user?.role == "client" ? "/client/post" : "/"}>{user?.name}</Link>
+            </Button>}
+            {user && <Button
+              variant='ghost'
+              className="w-full justify-start mb-2"
+            >
+              <Link href={"#-"} onClick={logout}>Logout</Link>
+            </Button>}
           </nav>
 
           {/* Mobile Menu Button */}

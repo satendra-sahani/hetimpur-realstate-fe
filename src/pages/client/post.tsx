@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, useEffect, useState } from "react";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +34,9 @@ import {
   uploadSingleImageAction,
 } from "@/service/action/common";
 import { RootState, LandTypes } from "@/types/types";
+import { Country, State, City, IState, ICity } from 'country-state-city';
 
+// Main component remains the same until LandForm
 export default function LandManagement() {
   const { user } = useSelector((state: RootState) => state.authenticationReducer);
   const { lands } = useSelector((state: RootState) => state.commonReducer);
@@ -44,14 +46,12 @@ export default function LandManagement() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const dispatch = useDispatch();
 
-  // Fetch land data on mount
   useEffect(() => {
     if (user) {
       dispatch(getLandDataAction({ userType: user?.role?.toLocaleLowerCase() }));
     }
   }, [dispatch, user]);
 
-  // Handle image upload
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -68,7 +68,7 @@ export default function LandManagement() {
         uploadSingleImageAction({
           data: formData,
           cb: (res: { url: string }) => {
-            setImageUrl(res.url); // Store the uploaded image URL
+            setImageUrl(res.url);
             alert("Image uploaded successfully.");
           },
           errorCB: () => alert("Image upload failed. Please try again."),
@@ -79,11 +79,10 @@ export default function LandManagement() {
     }
   };
 
-  // Add new land
   const handleAddLand = (newLand: Omit<LandTypes, "_id">) => {
     const landToSave = {
       ...newLand,
-      image: imageUrl || newLand.image, // Use uploaded image URL if available
+      image: imageUrl || newLand.image,
       client: user?._id || "",
     };
 
@@ -100,7 +99,6 @@ export default function LandManagement() {
     );
   };
 
-  // Edit existing land
   const handleEditLand = (updatedLand: Omit<LandTypes, "_id">) => {
     if (editingLand) {
       dispatch(
@@ -119,7 +117,6 @@ export default function LandManagement() {
     }
   };
 
-  // Delete land
   const handleDeleteLand = (id: string) => {
     dispatch(
       deleteLandDataAction({
@@ -133,7 +130,6 @@ export default function LandManagement() {
     );
   };
 
-  // Generate payment link
   const payNow = ({ landId }: any) => {
     dispatch(
       generatePaymentLinkAction({
@@ -277,13 +273,54 @@ function LandForm({ land, onSubmit, onCancel, handleImage }: LandFormProps) {
       paymentStatus: false,
     }
   );
+  const [states, setStates] = useState<IState[]>([]);
+  const [cities, setCities] = useState<ICity[]>([]);
+  const [selectedStateCode, setSelectedStateCode] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : type === "file" ? files?.[0] || "" : value,
-    }));
+  useEffect(() => {
+    // Get all states of India (country code: IN)
+    const indianStates = State.getStatesOfCountry("IN");
+    setStates(indianStates);
+
+    // If editing, find the state code for the existing state
+    if (land?.state) {
+      const stateObj = indianStates.find(s => s.name === land.state);
+      if (stateObj) {
+        setSelectedStateCode(stateObj.isoCode);
+      }
+    }
+  }, [land?.state]);
+
+  useEffect(() => {
+    // Update cities when state changes
+    if (selectedStateCode) {
+      const citiesOfState = City.getCitiesOfState("IN", selectedStateCode);
+      setCities(citiesOfState);
+    } else {
+      setCities([]);
+    }
+  }, [selectedStateCode]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    if (type === 'file') {
+      handleImage(e as ChangeEvent<HTMLInputElement>);
+    } else if (name === 'state') {
+      const selectedState = states.find(s => s.name === value);
+      if (selectedState) {
+        setSelectedStateCode(selectedState.isoCode);
+        setFormData(prev => ({
+          ...prev,
+          state: value,
+          city: '', // Reset city when state changes
+        }));
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSelectChange = (value: string) => {
@@ -313,11 +350,40 @@ function LandForm({ land, onSubmit, onCancel, handleImage }: LandFormProps) {
         </div>
         <div className="space-y-2">
           <Label htmlFor="state">State</Label>
-          <Input id="state" name="state" value={formData.state} onChange={handleChange} required />
+          <select
+            id="state"
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md bg-background"
+            required
+          >
+            <option value="">Select State</option>
+            {states.map((state) => (
+              <option key={state.isoCode} value={state.name}>
+                {state.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="space-y-2">
           <Label htmlFor="city">City</Label>
-          <Input id="city" name="city" value={formData.city} onChange={handleChange} required />
+          <select
+            id="city"
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-md bg-background"
+            required
+            disabled={!selectedStateCode}
+          >
+            <option value="">Select City</option>
+            {cities.map((city) => (
+              <option key={city.name} value={city.name}>
+                {city.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="space-y-2">
           <Label htmlFor="number">Number</Label>
@@ -344,8 +410,11 @@ function LandForm({ land, onSubmit, onCancel, handleImage }: LandFormProps) {
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">{land ? "Update Land" : "Add Land"}</Button>
+        <Button type="submit">
+          {land ? "Update Land" : "Add Land"}
+        </Button>
       </DialogFooter>
     </form>
   );
 }
+

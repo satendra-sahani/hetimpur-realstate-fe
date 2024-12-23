@@ -14,7 +14,6 @@ import { signUpAction } from '@/service/action/authentication'
 
 export function RegisterForm() {
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
   const [number, setNumber] = useState("")
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -46,7 +45,7 @@ export function RegisterForm() {
     setIsLoading(true)
     try {
       dispatch(signUpAction({
-        data: { name, email, contact: number, password, role: userType }, cb: () => {
+        data: { name, contact: number, password, role: userType }, cb: () => {
           router.push("/login")
         }
       }))
@@ -79,19 +78,6 @@ export function RegisterForm() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your full name"
-              />
-            </motion.div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <motion.div whileFocus="focus" variants={inputVariants}>
-              <Input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
               />
             </motion.div>
           </div>
